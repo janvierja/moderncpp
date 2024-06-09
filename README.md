@@ -23,7 +23,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 The illustration below shows the parts of a lambda syntax:
 <br/>
 <br/>
-<img src="lambda-with-labels.jpg" width="60%" height="60%">
+<img src="images\lambda-with-labels.jpg" width="60%" height="60%">
 <br/>
 <br/>
 
@@ -32,7 +32,7 @@ The illustration below shows the parts of a lambda syntax:
 > **[_captures_] _front-attr_<sub>(opt)</sub> (_params﻿_) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _back-attr_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ }**
 <br/>
 
-**captures**
+<img src="images\lambda-1.jpg" width="60%" height="60%">**captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
