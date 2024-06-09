@@ -27,12 +27,14 @@ The illustration below shows the parts of a lambda syntax:
 <br/>
 <br/>
 
-..and the syntax
+...whose general form is
+
+<br/>
 
 > **[_captures_] _front-attr_<sub>(opt)</sub> (_params﻿_) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _back-attr_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ }**
 <br/>
 
-<img src="images\lambda-1.jpg" width="60%" height="60%">**captures**
+<img src="images\lambda-1.JPG" width="3%" height="3%">**captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
@@ -48,6 +50,18 @@ The illustration below shows the parts of a lambda syntax:
    <br/>
    
    The syntax of an individual capture in **captures** is
+   <br/>
+
+   |Syntax|Desc|Example|
+   |---|---|---|
+   | [ _identifier_ ] |simple capture by-copy|`[x] () {}`|
+   | [ _identifier initializer_ ] <sub>since C++14</sub> |capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)|`[x=1] () {}`|
+   | [ _**&** identifier_ ] |simple capture by-reference|`[&x] () {}`|
+   | [ _**&** identifier initializer_ ] <sub>since C++14</sub> |capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)|`[&x=y] () {}`|
+   | [ this ] |simple capture by-reference of the current object|`[this] () {}`|
+   | [ *this ] <sub>since C++17</sub> |simple capture by-copy of the current object|`[*this] () {}`|
+   <br/>
+
    
    <br/>
 
