@@ -102,9 +102,12 @@ The illustration below shows the parts of a lambda syntax:
            return i + x;
       };
 
+      value = 10;
+
       printf("%d", add_to(10));
 
       // prints 17
+      // It's not 20 because captures are done at the point the lambda is declared, not when it's called!
      ```
      
      ``` c++
@@ -150,8 +153,10 @@ The illustration below shows the parts of a lambda syntax:
 
       // prints 20
      ```
+<br/>
+
     
-> [!WARNING]
-> **Captures are done at the point the lambda is declared, not when it's called!**
+> [!IMPORTANT]
+> _**Captures are done at the point the lambda is declared, not when it's called!**_
 
 <br/>
