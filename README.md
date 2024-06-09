@@ -19,22 +19,16 @@ Let's begin.
 ### <a name="lambda-expressions"></a>Lambda Expressions
 
 Full detail on lambda can be found at here: [Lambda expressions](https://en.cppreference.com/w/cpp/language/lambda) at the [C++ Reference](https://en.cppreference.com/w/) site.
-
-The illustration below shows the parts of a lambda syntax:
-<br/>
-<br/>
-<img src="images\lambda-with-labels.jpg" width="60%" height="60%">
-<br/>
 <br/>
 
-...whose general form is
+|Syntax||
+|---|---|
+| [ _captures_ ] ( _params﻿_ ) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ } |Lambda expression with parameter list|
+| [ _captures_ ]  { _body_ } |Simples form|
 
 <br/>
 
-> **[_captures_] _front-attr_<sub>(opt)</sub> (_params﻿_) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _back-attr_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ }**
-<br/>
-
-<img src="images\lambda-1.JPG" width="3%" height="3%">**captures**
+**captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
