@@ -32,24 +32,112 @@ The illustration below shows the parts of a lambda syntax:
 > **[_captures_] _front-attr_<sub>(opt)</sub> (_params﻿_) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _back-attr_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ }**
 <br/>
 
-1. **captures**
+**captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
    The capture list defines the outside variables that are accessible from within the lambda function body.
    <br/>
    <br/>
-   The only _capture-defaults_ are `&` and `=`.
+   The _capture-defaults_ are only `&` and `=`.
 
-   |||
+   |capture-default|desc|
    |---|---|
-   |`&`|implicitly capture the used variables with automatic storage duration by reference|
-   |`=`|implicitly capture the used variables with automatic storage duration by copy|
+   |`&`|capture by **reference**; implicitly capture the used variables with automatic [storage duration](https://en.cppreference.com/w/cpp/language/storage_duration) by reference|
+   |`=`|capture by **copy**; implicitly capture the used variables with automatic [storage duration](https://en.cppreference.com/w/cpp/language/storage_duration) by copy|
+   <br/>
    
-3. *front attribute spec*
-4. *parameter list*
-5. *specifier*
-6. *exception spec*
-7. *back attribute spec*
-8. *trailing return type*
-9. *lambda body*
+   The syntax of an individual capture in **captures** is
+   
+   <br/>
+
+   - Simple capture by-copy
+
+     _Syntax:_
+   
+     > [ _identifier_ ] ( ) { }
+   
+     _Example:_
+     <br/>
+   
+     ``` c++
+       int value = 1;
+       auto add_to = [value] (int i) { 
+	        return i + value;
+       };
+
+       printf("%d", add_to(10));
+
+       // prints 11
+     
+     ```
+
+
+   - Capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
+   
+     _Syntax:_
+     
+     > [ _identifier initializer_ ] ( ) { }
+
+     _Example:_
+     <br/>
+   
+     ``` c++
+      int value = 7;
+      auto add_to = [x=value] (int i) { 
+           return i + x;
+      };
+
+      printf("%d", add_to(10));
+
+      // prints 17
+     ```
+     
+     ``` c++
+      auto add_none = [x=0] (int i) { 
+         return i + x;
+      };
+
+      printf("%d", add_none(10));
+
+      // prints 10
+     ```
+    
+
+   - Simple capture by-reference  
+   
+     _Syntax:_
+     
+     > [ **&**_identifier_ ] ( ) { }
+
+     _Example:_
+     <br/>
+   
+     ``` c++
+      int value = 7;
+      auto add_to = [&value] (int i) { 
+           return i + x;
+      };
+
+      printf("%d", add_to(10));
+
+      // prints 17
+     ```
+     
+     ``` c++
+      int value = 7;
+      auto add_to = [&value] (int i) { 
+           return i + value;
+      };
+
+      value = 10;
+
+      printf("%d", add_to(10));
+
+      // prints 20
+     ```
+    
+> [!WARNING]
+> **Captures are done at the point the lambda is declared, not when it's called!**
+
+<br/>
