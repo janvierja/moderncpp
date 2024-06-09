@@ -21,10 +21,10 @@ Let's begin.
 Full detail on lambda can be found at here: [Lambda expressions](https://en.cppreference.com/w/cpp/language/lambda) at the [C++ Reference](https://en.cppreference.com/w/) site.
 <br/>
 
-|Syntax||
+|Syntax|Meaning|
 |---|---|
 | [ _captures_ ] ( _params﻿_ ) _specs_<sub>(opt)</sub> _exception_<sub>(opt)</sub> _trailing-type_<sub>(opt)</sub> { _body_ } |Lambda expression with parameter list|
-| [ _captures_ ]  { _body_ } |Simples form|
+| [ _captures_ ]  { _body_ } |Simplest form|
 
 <br/>
 
