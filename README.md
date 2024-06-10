@@ -127,9 +127,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
          return i + x;
       };
 
-      printf("%d", add_none(10));
-
-      // prints 10
+      auto result = add_none(10);
+      assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
     
 
@@ -148,9 +147,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
            return i + x;
       };
 
-      printf("%d", add_to(10));
-
-      // prints 17
+      auto result = add_to(10));
+      assert(result == 17);    // OK: value=7 was captured by reference
      ```
      
      ``` c++
@@ -161,9 +159,9 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
       value = 10;
 
-      printf("%d", add_to(10));
-
-      // prints 20
+      auto result = add_to(10));
+      assert(result == 20);    // OK: Since the lambda captured 'value' by reference, the change to value=10 was visible to the lambda
+      assert(result == 17);    // error: value already changed to 10 and is visible to the lambda since it was a capture by reference
      ```
 <br/>
 
