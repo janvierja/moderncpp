@@ -179,7 +179,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       assert(result == 17);    // error: val already changed to 10 and is visible to the lambda since it was a capture by-reference
      ```
 
-        - Capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
+   - Capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
    
      _Syntax:_
      
