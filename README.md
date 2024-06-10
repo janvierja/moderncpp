@@ -34,6 +34,24 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
    The capture list defines the outside variables that are accessible from within the lambda function body.
    <br/>
+   
+   > [!TIP]
+   > _Non-local variables and variables that have static [storage duration](https://en.cppreference.com/w/cpp/language/storage_duration)_ can be used in a lambda without being captured.
+
+   > ``` c++
+   > int g = 10;
+   > int main(int argc, char** argv) {
+   >     static int h = 20;
+   >     int i = 30;
+   >
+   >     [] () {
+   >         printf("%d", g);    // OK: variable 'g' is global
+   >         printf("%d", h);    // OK: variable 'h' is static
+   >         printf("%d", i);    // error: variable 'i' is a local variable
+   >     }
+   > }
+   > ```
+
    <br/>
    The _capture-defaults_ are only `&` and `=`.
 
@@ -42,7 +60,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    |`&`|capture by **reference**; implicitly capture the used variables with automatic [storage duration](https://en.cppreference.com/w/cpp/language/storage_duration) by reference|
    |`=`|capture by **copy**; implicitly capture the used variables with automatic [storage duration](https://en.cppreference.com/w/cpp/language/storage_duration) by copy|
    <br/>
-   
+
    The syntax of an individual capture in **captures** is
    <br/>
 
@@ -74,10 +92,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	        return i + value;
        };
 
-       printf("%d", add_to(10));
-
-       // prints 11
-     
+       auto result = add_to(10);
+       assert(result == 11);    // OK: value=1 was captured by the lambda expression     
      ```
 
 
@@ -98,10 +114,12 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
       value = 10;
 
-      printf("%d", add_to(10));
+      auto result = add_to(10);
 
-      // prints 17
-      // It's not 20 because captures are done at the point the lambda is declared, not when it's called!
+      assert(result == 17);    // OK: value=7 was captured and assigned to 'x'
+      assert(result == 20);    // error: result != 20
+                               //        value=10 is not captured by the lambda because captures are done at the point the lambda
+                               //        is declared, not when it's called!
      ```
      
      ``` c++
