@@ -83,17 +83,32 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      > [ _identifier_ ] ( ) { }
    
-     _Example:_
+     _Examples:_
      <br/>
    
      ``` c++
-       int value = 1;
-       auto add_to = [value] (int i) { 
-	        return i + value;
+       int val = 1;
+       auto add_to = [val] (int i) { 
+	        return i + val;
        };
 
        auto result = add_to(10);
-       assert(result == 11);    // OK: value=1 was captured by the lambda expression     
+       assert(result == 11);    // OK: val=1 was captured by-value by the lambda expression     
+     ```
+
+     ``` c++
+       int val = 1;
+       auto add_to = [val] (int i) { 
+	        return i + val;
+       };
+
+       val = 10;
+
+       auto result = add_to(10);
+       assert(result == 11);    // OK: val=1 was captured by-value by the lambda expression
+       assert(result == 20);    // error: result != 20
+                                //        val=10 is not captured by the lambda because captures are done at the point the
+                                //        lambda is declared, not when it's called!
      ```
 
 
@@ -103,23 +118,23 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      > [ _identifier initializer_ ] ( ) { }
 
-     _Example:_
+     _Examples:_
      <br/>
    
      ``` c++
-      int value = 7;
-      auto add_to = [x=value] (int i) { 
+      int val = 7;
+      auto add_to = [x=val] (int i) { 
            return i + x;
       };
 
-      value = 10;
+      val = 10;                // change value of val to 10
 
       auto result = add_to(10);
 
-      assert(result == 17);    // OK: value=7 was captured and assigned to 'x'
+      assert(result == 17);    // OK: val=7 was captured by-value and assigned to 'x'
       assert(result == 20);    // error: result != 20
-                               //        value=10 is not captured by the lambda because captures are done at the point the lambda
-                               //        is declared, not when it's called!
+                               //        val=10 is not captured by the lambda because captures are done at the point the
+                               //        lambda is declared, not when it's called!
      ```
      
      ``` c++
@@ -138,31 +153,64 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      > [ **&**_identifier_ ] ( ) { }
 
-     _Example:_
+     _Examples:_
      <br/>
    
      ``` c++
-      int value = 7;
-      auto add_to = [&value] (int i) { 
-           return i + x;
+      int val = 7;
+      auto add_to = [&val] (int i) { 
+           return i + val;
       };
 
-      auto result = add_to(10));
-      assert(result == 17);    // OK: value=7 was captured by reference
+      auto result = add_to(10);
+      assert(result == 17);    // OK: val=7 was captured by-reference
      ```
      
      ``` c++
-      int value = 7;
-      auto add_to = [&value] (int i) { 
-           return i + value;
+      int val = 7;
+      auto add_to = [&val] (int i) { 
+           return i + val;
       };
 
-      value = 10;
+      val = 10;
 
-      auto result = add_to(10));
-      assert(result == 20);    // OK: Since the lambda captured 'value' by reference, the change to value=10 was visible to the lambda
-      assert(result == 17);    // error: value already changed to 10 and is visible to the lambda since it was a capture by reference
+      auto result = add_to(10);
+      assert(result == 20);    // OK: Since the lambda captured 'val' by-reference, the change to val=10 was visible to the lambda
+      assert(result == 17);    // error: val already changed to 10 and is visible to the lambda since it was a capture by-reference
      ```
+
+        - Capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
+   
+     _Syntax:_
+     
+     > [ **&**_identifier_ _initializer_ ] ( ) { }
+
+     _Examples:_
+     <br/>
+   
+     ``` c++
+      int val = 7;
+      auto add_to = [&x=val] (int i) { 
+           return i + x;
+      };
+
+      val = 10;                // change value of val to 10 and consequently x also changes since it is a reference to val
+
+      auto result = add_to(10);
+
+      assert(result == 20);    // OK: 'x' is a reference to 'val', so whatever happens to 'val', happens to 'x'
+      assert(result == 17);    // error: val already changed to 10 and is visible to the lambda expression through variable'x'
+     ```
+     
+     ``` c++
+      auto add_none = [x=0] (int i) { 
+         return i + x;
+      };
+
+      auto result = add_none(10);
+      assert(result == 10);    // OK: '0' was used and assigned to 'x'
+     ```
+
 <br/>
 
     
