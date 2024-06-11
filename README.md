@@ -28,7 +28,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
 <br/>
 
-**captures**
+**1. captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
@@ -66,18 +66,18 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
    |Syntax|Desc|Example|
    |---|---|---|
-   | [ _identifier_ ] |simple capture by-copy|`[x] () {}`|
-   | [ _identifier initializer_ ] <sub>since C++14</sub> |capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)|`[x=1] () {}`|
-   | [ _**&** identifier_ ] |simple capture by-reference|`[&x] () {}`|
-   | [ _**&** identifier initializer_ ] <sub>since C++14</sub> |capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)|`[&x=y] () {}`|
-   | [ this ] |simple capture by-reference of the current object|`[this] () {}`|
-   | [ *this ] <sub>since C++17</sub> |simple capture by-copy of the current object|`[*this] () {}`|
+   | [ _identifier_ ] |simple [capture by-copy](#capture-by-copy)|`[x] () {}`|
+   | [ _identifier initializer_ ] <sub>since C++14</sub> |[capture by-copy with an initializer](#capture-by-copy-with-init)|`[x=1] () {}`|
+   | [ _**&** identifier_ ] |simple [capture by-reference](#capture-by-ref)|`[&x] () {}`|
+   | [ _**&** identifier initializer_ ] <sub>since C++14</sub> |[capture by-reference with an initializer](#capture-by-ref-with-init)|`[&x=y] () {}`|
+   | [ this ] |simple [capture by-reference of the current object](#capture-by-ref-current-obj)|`[this] () {}`|
+   | [ *this ] <sub>since C++17</sub> |simple [capture by-copy of the current object](#capture-by-copy-current-obj)|`[*this] () {}`|
    <br/>
 
    
    <br/>
 
-   - Simple capture by-copy
+   - Simple capture by-copy<a name="capture-by-copy"></a>
 
      _Syntax:_
 
@@ -112,11 +112,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      ```
 
 
-   - Capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
+   - Capture by-copy with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  <a name="capture-by-copy-with-init"></a>
    
      _Syntax:_
      
-     `[ identifier initializer ] ( ) { }`
+     `[ identifier initializer ] ( ) { }`<sub>since C++14</sub>
 
      _Examples:_
      <br/>
@@ -147,7 +147,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      ```
     
 
-   - Simple capture by-reference  
+   - Simple capture by-reference  <a name="capture-by-ref"></a>
    
      _Syntax:_
      
@@ -179,11 +179,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       assert(result == 17);    // error: val already changed to 10 and is visible to the lambda since it was a capture by-reference
      ```
 
-   - Capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  
+   - Capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  <a name="capture-by-ref-with-init"></a>
    
      _Syntax:_
      
-     `[ &identifier initializer ] ( ) { }`
+     `[ &identifier initializer ] ( ) { }`<sub>since C++14</sub>
 
      _Examples:_
      <br/>
@@ -210,7 +210,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_none(10);
       assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
-   - Simple capture by-reference of the current object
+   - Simple capture by-reference of the current object <a name="capture-by-ref-current-obj"></a>
    - 
      _Syntax:_
      
