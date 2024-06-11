@@ -83,8 +83,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
      `[ identifier ] ( ) { }`
    
-     _Examples:_
-     <br/>
+     _Example 1:_
    
      ``` c++
        int val = 1;
@@ -95,6 +94,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
        auto result = add_to(10);
        assert(result == 11);    // OK: val=1 was captured by-value by the lambda expression     
      ```
+
+     _Example 2:_
 
      ``` c++
        int val = 1;
@@ -118,8 +119,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      `[ identifier initializer ] ( ) { }`<sub>since C++14</sub>
 
-     _Examples:_
-     <br/>
+     _Example 1:_
    
      ``` c++
       int val = 7;
@@ -136,6 +136,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
                                //        val=10 is not captured by the lambda because captures are performed
                                //        when the lambda is created, not when it's called! Here, val=7 was captured.
      ```
+     _Example 2:_
      
      ``` c++
       auto add_none = [x=0] (int i) { 
@@ -145,7 +146,24 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_none(10);
       assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
+     
+     _Example 3:_
+     
+     ``` c++
+      int getValue() { return 77; };
+     
+      auto add_value = [x=getValue()] (int i) { 
+         return i + x;
+      };
+
+      auto result = add_value(10);
+      assert(result == 87);    // OK: getValue() returns 77 and added to 10
+     ```
+<br/>
     
+> [!IMPORTANT]
+> _**Captures are performed when the lambda is created, not when it's called!**_
+<br/>
 
    - Simple capture by-reference  <a name="capture-by-ref"></a>
    
@@ -153,8 +171,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      `[ &identifier ] ( ) { }`
 
-     _Examples:_
-     <br/>
+     _Example 1:_
    
      ``` c++
       int val = 7;
@@ -165,6 +182,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_to(10);
       assert(result == 17);    // OK: val=7 was captured by-reference
      ```
+     _Example 2:_
      
      ``` c++
       int val = 7;
@@ -185,8 +203,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      `[ &identifier initializer ] ( ) { }`<sub>since C++14</sub>
 
-     _Examples:_
-     <br/>
+     _Example 1:_
    
      ``` c++
       int val = 7;
@@ -201,6 +218,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       assert(result == 20);    // OK: 'x' is a reference to 'val', so whatever happens to 'val', happens to 'x'
       assert(result == 17);    // error: val already changed to 10 and is visible to the lambda expression through variable'x'
      ```
+
+     _Example 2:_
      
      ``` c++
       auto add_none = [x=0] (int i) { 
@@ -210,16 +229,61 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_none(10);
       assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
+     
    - Simple capture by-reference of the current object <a name="capture-by-ref-current-obj"></a>
-   - 
+    <br/>
      _Syntax:_
      
      `[ this ] ( ) { }`
-     
-<br/>
 
-    
-> [!IMPORTANT]
-> _**Captures are performed when the lambda is created, not when it's called!**_
+     _Example:_
+     
+``` c++
+	class MyClass {
+	  private:
+		int _val{0};
+		void mod_val(int val) { val = val; }
+		int get_val() { return _val; }
+	  public:
+	
+		void modify_me()  {
+			auto modify = [this] () {      // Current object captured by-reference therefore
+				mod_val(100);          // modification of _val impacts `this` object
+			};
+		
+			modify();
+		}
+		
+		int call() {
+			auto add = [this] (int i) {    // Current object captured by-reference therefore
+				return i + get_val();  // `get_val()` can see the modification done
+			};
+		
+			return add(30);
+		}
+	};
+ 
+	int main(int argc, char** argv) {
+ 
+		MyClass b;
+		
+		b.modify_me();
+		auto result = b.call();
+		
+		assert(result == 130);
+	 
+	}
+``` 
+   - Simple capture by-copy of the current object <a name="capture-by-copy-current-obj"></a>
+    <br/>
+     _Syntax:_
+     
+     `[ *this ] ( ) { }`
+
+     _Example:_
+     
+``` c++
+```   
+
 
 <br/>
