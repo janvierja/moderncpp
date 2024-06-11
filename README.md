@@ -242,10 +242,9 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	class MyClass {
 	  private:
 		int _val{0};
-		void mod_val(int val) { val = val; }
-		int get_val() { return _val; }
-	  public:
-	
+		void mod_val(int val) { this->_val = val; }
+		int get_val() const { return this->_val; }
+
 		void modify_me()  {
 			auto modify = [this] () {      // Current object captured by-reference therefore
 				mod_val(100);          // modification of _val impacts `this` object
@@ -253,10 +252,17 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 		
 			modify();
 		}
-		
+	  public:
 		int call() {
-			auto add = [this] (int i) {    // Current object captured by-reference therefore
-				return i + get_val();  // `get_val()` can see the modification done
+
+			modify_me();    // Attempt to modify _val to 100
+
+			auto add = [this] (int i) {        // Current object captured by-reference
+
+                                assert(this->_val == 100); // _val is 100 as set by `modify_me()`
+                                assert(get_val() == 100);  // _val is 100 as set by `modify_me()`
+
+				return i + get_val();      
 			};
 		
 			return add(30);
@@ -266,11 +272,10 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	int main(int argc, char** argv) {
  
 		MyClass b;
-		
-		b.modify_me();
+	
 		auto result = b.call();
 		
-		assert(result == 130);
+		assert(result == 130);    // OK: _val modified to 100 at modify_me and 30 added to it in call()
 	 
 	}
 ``` 
@@ -283,6 +288,52 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      _Example:_
      
 ``` c++
+	class MyClass {
+	  private:
+		int _val{0};
+		void mod_val(int val) { this->_val = val; }
+		int get_val() const { return this->_val; }
+	
+		void modify_me()  {
+			auto modify = [*this] () mutable {  // Current object captured by-copy therefore
+				mod_val(100);               // modification of _val does not impact `this` object
+	
+				assert(get_val() == 100);   // The copied *this object is the one that gets modified
+				assert(this->_val == 100);  // The original `this` object is untouched
+			};
+		
+			modify();
+		}
+	
+	  public:
+		
+		int call() {
+
+			modify_me();    // Attempt to modify _val to 100
+
+			auto add = [this] (int i) {
+	
+				assert(this->get_val() == 0); // _val is still 0; modify_me did not impact _val
+				assert(this->_val == 0);      // _val is still 0; modify_me did not impact _val
+	
+				return i + get_val();
+			};
+		
+			return add(30);
+		}
+	};
+	
+	
+	
+	int main(int argc, char** argv) {
+	
+	MyClass b;
+	
+	auto result = b.call();
+	
+	assert(result == 30);    // OK
+
+	}
 ```   
 
 
