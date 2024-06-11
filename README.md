@@ -283,7 +283,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
     <br/>
      _Syntax:_
      
-     `[ *this ] ( ) { }`
+     `[ *this ] ( ) { }`<sub>since C++17</sub>
 
      _Example:_
      
