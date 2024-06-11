@@ -98,17 +98,17 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
      ``` c++
        int val = 1;
-       auto add_to = [val] (int i) { 
+       auto add_to = [val] (int i) {  // Captures local copy
 	        return i + val;
        };
 
-       val = 10;
+       val = 10;                  // change value of val to 10 has no impact on `add_to`
 
        auto result = add_to(10);
-       assert(result == 11);    // OK: val=1 was captured by-value by the lambda expression
-       assert(result == 20);    // error: result != 20
-                                //        val=10 is not captured by the lambda because captures are performed when
-                                //        the lambda is created, not when it's called! So here val=1 was captured.
+       assert(result == 11);      // OK: val=1 was captured by-value by the lambda expression
+       assert(result == 20);      // error: result != 20
+                                  //        val=10 is not captured by the lambda because captures are performed when
+                                  //        the lambda is created, not when it's called! So here val=1 was captured.
      ```
 
 
@@ -123,11 +123,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      ``` c++
       int val = 7;
-      auto add_to = [x=val] (int i) { 
+      auto add_to = [x=val] (int i) {  // Captures local copy
            return i + x;
       };
 
-      val = 10;                // change value of val to 10
+      val = 10;                // change value of val to 10 has no impact on `add_to`
 
       auto result = add_to(10);
 
@@ -158,7 +158,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      ``` c++
       int val = 7;
-      auto add_to = [&val] (int i) { 
+      auto add_to = [&val] (int i) {
            return i + val;
       };
 
@@ -168,11 +168,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      ``` c++
       int val = 7;
-      auto add_to = [&val] (int i) { 
+      auto add_to = [&val] (int i) {  // Captures reference to val 
            return i + val;
       };
 
-      val = 10;
+      val = 10;                // has impact on `add_to` since reference was captured when the lambda was created
 
       auto result = add_to(10);
       assert(result == 20);    // OK: Since the lambda captured 'val' by-reference, the change to val=10 was visible to the lambda
@@ -190,11 +190,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      ``` c++
       int val = 7;
-      auto add_to = [&x=val] (int i) { 
+      auto add_to = [&x=val] (int i) {   // `x` is a reference to captured `val`
            return i + x;
       };
 
-      val = 10;                // change value of val to 10 and consequently x also changes since it is a reference to val
+      val = 10;                // has impact on `add_to` since reference was captured when the lambda was created
 
       auto result = add_to(10);
 
