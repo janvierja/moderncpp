@@ -80,8 +80,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    - Simple capture by-copy
 
      _Syntax:_
-   
-     > [ _identifier_ ] ( ) { }
+
+     `[ identifier ] ( ) { }`
    
      _Examples:_
      <br/>
@@ -107,8 +107,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
        auto result = add_to(10);
        assert(result == 11);    // OK: val=1 was captured by-value by the lambda expression
        assert(result == 20);    // error: result != 20
-                                //        val=10 is not captured by the lambda because captures are done at the point the
-                                //        lambda is declared, not when it's called!
+                                //        val=10 is not captured by the lambda because captures are performed when
+                                //        the lambda is created, not when it's called! So here val=1 was captured.
      ```
 
 
@@ -116,7 +116,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      _Syntax:_
      
-     > [ _identifier initializer_ ] ( ) { }
+     `[ identifier initializer ] ( ) { }`
 
      _Examples:_
      <br/>
@@ -133,8 +133,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
       assert(result == 17);    // OK: val=7 was captured by-value and assigned to 'x'
       assert(result == 20);    // error: result != 20
-                               //        val=10 is not captured by the lambda because captures are done at the point the
-                               //        lambda is declared, not when it's called!
+                               //        val=10 is not captured by the lambda because captures are performed
+                               //        when the lambda is created, not when it's called! Here, val=7 was captured.
      ```
      
      ``` c++
@@ -151,7 +151,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      _Syntax:_
      
-     > [ **&**_identifier_ ] ( ) { }
+     `[ &identifier ] ( ) { }`
 
      _Examples:_
      <br/>
@@ -183,7 +183,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
      _Syntax:_
      
-     > [ **&**_identifier_ _initializer_ ] ( ) { }
+     `[ &identifier initializer ] ( ) { }`
 
      _Examples:_
      <br/>
@@ -210,11 +210,16 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_none(10);
       assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
-
+   - Simple capture by-reference of the current object
+   - 
+     _Syntax:_
+     
+     `[ this ] ( ) { }`
+     
 <br/>
 
     
 > [!IMPORTANT]
-> _**Captures are done at the point the lambda is declared, not when it's called!**_
+> _**Captures are performed when the lambda is created, not when it's called!**_
 
 <br/>
