@@ -53,6 +53,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    > ```
 
    <br/>
+   
    The _capture-defaults_ are only `&` and `=`.
 
    |capture-default|desc|
@@ -316,11 +317,11 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	
 	int main(int argc, char** argv) {
 	
-	MyClass b;
+	    MyClass b;
 	
-	auto result = b.call();
+	    auto result = b.call();
 	
-	assert(result == 30);    // OK: The call to modify_me() worked on a copy of this so changes did not reflect here
+	    assert(result == 30);    // OK: The call to modify_me() worked on a copy of this so changes did not reflect here
 
 	}
 ```   
