@@ -28,7 +28,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
 <br/>
 
-**1. captures**
+<a name="lambda-captures"></a>**1. captures**
    <br/>
    <br/>
    The captures is a comma-separated list of zero or more captures, optionally beginning with the _capture-default_.
@@ -326,5 +326,39 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	}
 ```   
 
-
 <br/>
+
+<a name="lambda-params"></a>**2. params**
+   <br/>
+   <br/>
+   The [parameter list](https://en.cppreference.com/w/cpp/language/function#Parameter_list) of `operator()`
+   <br/>
+
+<a name="lambda-specs"></a>**3. specs**
+   <br/>
+   <br/>
+   A list of the following specifiers, each specifier is allowed at most once in each sequence.
+   <br/>   
+   |specifier|effect|
+   |---|---|
+   |`mutable`|Allows [body](#lambda-body) to modify the objects captured by copy, and to call their non-const member functions.|
+   |`constexpr`<sub>since C++17</sub>|Explicitly specifies that `operator()` is a [constexpr function](https://en.cppreference.com/w/cpp/language/constexpr#constexpr_function). If `operator()` satisfy all constexpr function requirements, `operator()` will be constexpr even if **constexpr** is not present.|
+   <br/>
+   
+<a name="lambda-exception"></a>**4. exception**
+   <br/>
+   <br/>
+   The exception specification
+   <br/>
+   
+<a name="lambda-exception"></a>**5. traling type**
+   <br/>
+   <br/>
+   `-> ret`, where `ret` specifies the return type.
+   <br/>
+   
+<a name="lambda-body"></a>**5. body**
+   <br/>
+   <br/>
+   The function body.
+   <br/>   
