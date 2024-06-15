@@ -203,7 +203,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
      
      `[ &identifier initializer ] ( ) { }`<sub>since C++14</sub>
 
-     _Example 1:_
+     _Example:_
    
      ``` c++
       int val = 7;
@@ -217,17 +217,6 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
       assert(result == 20);    // OK: 'x' is a reference to 'val', so whatever happens to 'val', happens to 'x'
       assert(result == 17);    // error: val already changed to 10 and is visible to the lambda expression through variable'x'
-     ```
-
-     _Example 2:_
-     
-     ``` c++
-      auto add_none = [x=0] (int i) { 
-         return i + x;
-      };
-
-      auto result = add_none(10);
-      assert(result == 10);    // OK: '0' was used and assigned to 'x'
      ```
      
    - Simple capture by-reference of the current object <a name="capture-by-ref-current-obj"></a>
@@ -250,7 +239,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 				mod_val(100);          // modification of _val impacts `this` object
 			};
 		
-			modify();
+			modify();                      // Perform the modification of _val
 		}
 	  public:
 		int call() {
@@ -275,7 +264,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	
 		auto result = b.call();
 		
-		assert(result == 130);    // OK: _val modified to 100 at modify_me and 30 added to it in call()
+		assert(result == 130);    // OK: result is 130 because _val modified to 100 at modify_me and 30 added to it in call()
 	 
 	}
 ``` 
@@ -311,7 +300,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 
 			modify_me();    // Attempt to modify _val to 100
 
-			auto add = [this] (int i) {
+			auto add = [this] (int i) {           // Current object capture by-reference
 	
 				assert(this->get_val() == 0); // _val is still 0; modify_me did not impact _val
 				assert(this->_val == 0);      // _val is still 0; modify_me did not impact _val
@@ -331,7 +320,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	
 	auto result = b.call();
 	
-	assert(result == 30);    // OK
+	assert(result == 30);    // OK: The call to modify_me() worked on a copy of this so changes did not reflect here
 
 	}
 ```   
