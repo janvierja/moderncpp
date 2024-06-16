@@ -11,9 +11,15 @@ The code in this document has been tested and compiled with GCC 13.2.0 built by 
 
 Let's begin.
 
-* [Lambda Expressions](#lambda-expressions)
+* Lambda
+  * [Lambda Expressions](#lambda-expressions)
+  * [Generic Lambdas](#lambda-generic)
+  * [Lambdas with No Capture](#lambda-no-capture)
 
 <br/>
+<br/>
+
+## Lambda
 <br/>
 
 ### <a name="lambda-expressions"></a>Lambda Expressions
@@ -183,6 +189,7 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       auto result = add_to(10);
       assert(result == 17);    // OK: val=7 was captured by-reference
      ```
+
      _Example 2:_
      
      ``` c++
@@ -197,6 +204,22 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
       assert(result == 20);    // OK: Since the lambda captured 'val' by-reference, the change to val=10 was visible to the lambda
       assert(result == 17);    // error: val already changed to 10 and is visible to the lambda since it was a capture by-reference
      ```
+     _Example 3:_
+     
+     ``` c++
+        int val = 7;
+
+        auto add_to = [&val](int i) {
+            auto ret = i + val;
+            val = val + val;    // modify val
+            return ret;
+        };
+
+        auto result = add_to(10);
+     
+        assert(result == 17);    // OK
+        assert(val == 14);       // val was modified inside `add_to` lambda since it was captured by-reference
+    ```
 
    - Capture by-reference with an [initializer](https://en.cppreference.com/w/cpp/language/initialization)  <a name="capture-by-ref-with-init"></a>
    
@@ -362,3 +385,37 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    <br/>
    The function body.
    <br/>   
+   
+### <a name="lambda-generic"></a>Generic Lambdas
+
+   ``` c++
+	// define a generic lambda object
+	auto twice = [](const auto x) {
+		return x + x;
+	};
+
+	// lambda compiled for different parameter types
+	
+	auto i = twice(3);                 // i is int => 6
+	auto d = twice(1.7);               // d is double => 3.4
+	auto s = twice(std::string("hi")); // s is std::string => "hihi"
+   ```
+
+   <br/>   
+   
+### <a name="lambda-no-capture"></a>Lambdas with No Capture
+
+Lambdas with no captures can be used as an ordinary function pointer
+<br/>
+``` c++
+       #include <cstdlib>
+    
+       int atexit( void (*func)(void) );
+       ...
+       ...
+       int main() {
+           std::atexit([]() {
+                              std::cout << "goodbye!" << std::endl;
+                       });
+       }
+``` 
