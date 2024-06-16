@@ -15,6 +15,7 @@ Let's begin.
   * [Lambda Expressions](#lambda-expressions)
   * [Generic Lambdas](#lambda-generic)
   * [Lambdas with No Capture](#lambda-no-capture)
+  * [Mutable Lambda](#lambda-mutable)
 
 <br/>
 <br/>
@@ -388,6 +389,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
 ### <a name="lambda-generic"></a>Generic Lambdas
 
+This lambda is compiled for different parameter types
+
    ``` c++
 	// define a generic lambda object
 	auto twice = [](const auto x) {
@@ -405,8 +408,19 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
    
 ### <a name="lambda-no-capture"></a>Lambdas with No Capture
 
-Lambdas with no captures can be used as an ordinary function pointer
+Lambdas with no captures can be used as an ordinary _function pointer_.
+That is,
 <br/>
+
+``` c++
+    int (*fp)(int) = [](int i) { return i; };
+```
+<br/>
+
+_Example:_
+
+<br/>
+
 ``` c++
        #include <cstdlib>
     
@@ -419,3 +433,152 @@ Lambdas with no captures can be used as an ordinary function pointer
                        });
        }
 ``` 
+
+<br/>
+
+Unary operator ```+``` forces the conversion of a capture-less lambda to a function pointer
+
+<br/>
+
+``` c++
+	void foo(std::function<void()> f) { f(); }
+	void foo(void (*f)()) { f(); }
+	
+	int main(int argc, char** argv) {
+	
+	    foo( []() {}  );  // error: (ambiguous) more than one instance of overloaded function "foo" matches the argument list:C/C++(308)
+                              //            function "foo(std::function<void ()> f)"
+                              //            function "foo(void (*f)())"
+                              //            argument types are: (lambda []()->void)
+	    foo( +[]() {} );  // OK: not ambiguous since forces conversion to a function pointer void (*f)(), that is, function "foo(void (*f)())"
+	
+	}
+```
+<br/>
+
+### <a name="lambda-mutable"></a>Mutable Lambdas
+
+<br/>
+
+Lambdas are _stateless_ by default, that is, values captured by-value cannot be modified, however, the spec ```mutable``` makes the lambda _stateful_, that is, modification to values captured by-value are allowed.<br/>
+Consider the example below.
+
+<br/>
+
+``` c++
+#include <iostream>
+#include <iterator>
+#include <vector>
+#include <algorithm>
+
+// A `mutable` lambda definition
+auto changed = [prev = 0](auto cur) mutable {
+	bool changed = cur != prev;
+	prev = cur;
+	return changed;
+	};
+
+// class with member function template
+class MyInts {
+	std::vector<int> v_;
+  public:
+	MyInts(std::vector<int> v) {
+		this->v_ = v;
+	}
+	template<typename Func>
+	void for_each(Func fn) {
+		for(int i : v_) {
+			if(fn(i)) {
+				std::cout << i << " ";
+			}
+		}
+	}
+};
+
+// non-member function template
+template<typename Func>
+void for_each(Func fn, std::vector<int> v) {
+	for(int i : v) {
+		if(fn(i)) {
+			std::cout << i << " ";
+		}
+	}
+}
+
+int main() {
+
+	std::vector<int> v{ 7, 42, 42, 0, 3, 3, 7 };
+	
+	// standard algos like `copy_if` takes callable by value meaning they
+	// operate with their own copy of the lambda named `changed`
+	
+	std::cout << "by copy_if" << std::endl;
+
+	// Prints 7 42 0 3 7
+	std::copy_if(v.begin(), v.end(),
+		std::ostream_iterator<int>{std::cout, " "},
+		changed);
+
+	std::cout << std::endl;
+
+	// Still prints 7 42 0 3 7
+	std::copy_if(v.begin(), v.end(),
+		std::ostream_iterator<int>{std::cout, " "},
+		changed);
+
+	std::cout << std::endl;
+	std::cout << "----" << std::endl;
+	std::cout << "by member function template" << std::endl;
+
+        // Prints 7 42 0 3 7
+	MyInts my_ints(v);
+	my_ints.for_each(changed);   // takes callable by value
+	                             // `my_ints` has its own copy of the lambda
+
+	std::cout << std::endl;
+
+        // Still Prints 7 42 0 3 7
+	MyInts my_ints_2(v);
+	my_ints_2.for_each(changed); // takes callable by value
+	                             // `my_ints_2` has its own copy of the lambda
+	std::cout << std::endl;
+	std::cout << "----" << std::endl;
+	std::cout << "by non-member function template" << std::endl;
+
+        // Prints 7 42 0 3 7
+	for_each(changed, v);   // takes callable by value
+	                        // `my_ints` has its own copy of the lambda
+
+	std::cout << std::endl;
+
+        // Still Prints 7 42 0 3 7
+	for_each(changed, v);   // takes callable by value
+	                        // `my_ints` has its own copy of the lambda
+
+	std::cout << std::endl;
+	std::cout << "----" << std::endl;
+	std::cout << "by plain ol' call to the lambda `changed`" << std::endl;
+
+	// Prints 7 42 0 3 7
+	for (int i : v) {
+		if (changed(i)) {
+			std::cout << i << " ";
+		}
+	}
+
+	std::cout << std::endl;
+
+	// Uh-oh! Prints 42 0 3 7
+	// It has detected last value "7" on previous for-each loop 
+	for (int i : v) {
+		if (changed(i)) {
+			std::cout << i << " ";
+		}
+	}
+
+	return 0;
+}
+```
+
+
+
