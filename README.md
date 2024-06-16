@@ -461,6 +461,7 @@ Unary operator ```+``` forces the conversion of a capture-less lambda to a funct
 <br/>
 
 Lambdas are _stateless_ by default, that is, values captured by-value cannot be modified, however, the spec ```mutable``` makes the lambda _stateful_, that is, modification to values captured by-value are allowed.<br/>
+
 Consider the example below.
 
 <br/>
@@ -471,7 +472,7 @@ Consider the example below.
 #include <vector>
 #include <algorithm>
 
-// A `mutable` lambda definition
+// `mutable` lambda definition
 auto changed = [prev = 0](auto cur) mutable {
 	bool changed = cur != prev;
 	prev = cur;
@@ -576,9 +577,31 @@ int main() {
 		}
 	}
 
+	std::cout << "   // Uh-oh! It has detected last value '7' (above) on previous for-each loop" << std::endl;
+
 	return 0;
 }
 ```
 
+<br/>
+The output of the code block above is as follows:
+
+```
+by copy_if
+7 42 0 3 7
+7 42 0 3 7
+----
+by member function template
+7 42 0 3 7
+7 42 0 3 7
+----
+by non-member function template
+7 42 0 3 7
+7 42 0 3 7
+----
+by plain ol' call to the lambda `changed`
+7 42 0 3 7
+42 0 3 7    // Uh-oh! It has detected last value '7' (above) on previous for-each loop
+```
 
 
