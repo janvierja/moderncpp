@@ -276,7 +276,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
                                 assert(this->_val == 100); // _val is 100 as set by `modify_me()`
                                 assert(get_val() == 100);  // _val is 100 as set by `modify_me()`
 
-				return i + get_val();      
+				this->_val = i + get_val();
+				return get_val();      
 			};
 		
 			return add(30);
