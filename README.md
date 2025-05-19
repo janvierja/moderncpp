@@ -313,8 +313,8 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 			auto modify = [*this] () mutable {  // Current object captured by-copy therefore
 				mod_val(100);               // modification of _val does not impact `this` object
 	
-				assert(get_val() == 100);   // The copied *this object is the one that gets modified
-				assert(this->_val == 100);  // The original `this` object is untouched
+				assert(get_val() == 100);   // OK: The modified `this` object in get_val() is just a copy, the original is untouched
+				assert(this->_val == 100);  // OK: The modified `this` object is just a copy, the original is untouched
 			};
 		
 			modify();
@@ -322,20 +322,15 @@ Full detail on lambda can be found at here: [Lambda expressions](https://en.cppr
 	
 	  public:
 		
-		int call() {
+                int call() {
+                        modify_me();            // Supposedly modifies _val to 100
+                        assert(get_val() == 0); // modify_me() did't change _val
 
-			modify_me();    // Attempt to modify _val to 100
+                        this->_val = 30;
+                        return get_val();
+                }
 
-			auto add = [this] (int i) {           // Current object capture by-reference
-	
-				assert(this->get_val() == 0); // _val is still 0; modify_me did not impact _val
-				assert(this->_val == 0);      // _val is still 0; modify_me did not impact _val
-	
-				return i + get_val();
-			};
-		
-			return add(30);
-		}
+
 	};
 	
 	
